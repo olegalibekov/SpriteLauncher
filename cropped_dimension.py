@@ -1,30 +1,39 @@
 from imageio import imread
+from pathlib import Path
 from PIL import Image
 import numpy as np
 import os
 
-# imgs_dir = '/home/fehty/BlenderCompilation/BlenderRes/CamClosestFrame/Obj0/'
-imgs_dir = '/home/fehty/BlenderCompilation/BlenderRes/EachFrameRender/Obj8/'
+objs_dir = '/home/fehty/BlenderCompilation/BlenderRes/EachFrameRender/'
+dir_to_save = '/home/fehty/PycharmProjects/SpriteLauncher/Images/'
 
 
 def through_dir():
-    all_objs = dict()
-    for filename in os.listdir(imgs_dir):
-        all_objs[filename] = get_pos_to_crop(imgs_dir + filename)
-    l_dim = get_largest_dimension(all_objs)
-
-    get_cropped_imgs(all_objs, l_dim)
+    for obj in os.listdir(objs_dir):
+        all_objs = dict()
+        obj_path = objs_dir + obj
+        for obj_img in os.listdir(obj_path):
+            all_objs[obj_img] = get_pos_to_crop(obj_path + '/' + obj_img)
+        l_dim = get_largest_dimension(all_objs)
+        get_cropped_imgs(obj, all_objs, l_dim)
 
 
 def get_largest_dimension(all_objs):
-    # Optimize inside dimensions(find instantly boundaries)
     largest_dimension = dict()
-    length_arr = [abs(all_objs[dict_item]['left_x'] - all_objs[dict_item]['right_x'])
-                  for dict_item in all_objs]
-    largest_dimension['length'] = max(length_arr)
-    height_arr = [abs(all_objs[dict_item]['top_y'] - all_objs[dict_item]['bottom_y'])
-                  for dict_item in all_objs]
-    largest_dimension['height'] = max(height_arr)
+
+    first_el = list(all_objs.keys())[0]
+    largest_dimension['length'] = abs(all_objs[first_el]['left_x'] - all_objs[first_el]['right_x'])
+    largest_dimension['height'] = abs(all_objs[first_el]['top_y'] - all_objs[first_el]['bottom_y'])
+
+    for dict_item in all_objs:
+        length = abs(all_objs[dict_item]['left_x'] - all_objs[dict_item]['right_x'])
+        if length > largest_dimension['length']:
+            largest_dimension['length'] = length
+
+        height = abs(all_objs[dict_item]['top_y'] - all_objs[dict_item]['bottom_y'])
+        if height > largest_dimension['height']:
+            largest_dimension['height'] = height
+
     return largest_dimension
 
 
@@ -66,23 +75,20 @@ def get_pos_to_crop(im_path):
     return dim
 
 
-def get_cropped_imgs(all_objs, l_dim):
-    for filename in os.listdir(imgs_dir):
-        img = Image.open(imgs_dir + filename)
-
-        length = abs(all_objs[filename]['left_x'] - all_objs[filename]['right_x'])
+def get_cropped_imgs(obj, all_objs, l_dim):
+    obj_path = objs_dir + obj
+    for obj_img in os.listdir(obj_path):
+        img = Image.open(obj_path + '/' + obj_img)
+        length = abs(all_objs[obj_img]['left_x'] - all_objs[obj_img]['right_x'])
         empty_length = abs(l_dim['length'] - length)
-        left_x = all_objs[filename]['left_x'] + 0.0 - empty_length / 2
-        right_x = all_objs[filename]['right_x'] + 0.0 + empty_length / 2
-
-        height = abs(all_objs[filename]['top_y'] - all_objs[filename]['bottom_y'])
+        left_x = all_objs[obj_img]['left_x'] - (empty_length / 2)
+        right_x = all_objs[obj_img]['right_x'] + (empty_length / 2)
+        height = abs(all_objs[obj_img]['top_y'] - all_objs[obj_img]['bottom_y'])
         empty_height = abs(l_dim['height'] - height)
-        top_y = all_objs[filename]['top_y'] + 0.0 - empty_height / 2
-        bottom_y = all_objs[filename]['bottom_y'] + 0.0 + empty_height / 2
+        top_y = all_objs[obj_img]['top_y'] + 0.0 - empty_height / 2
+        bottom_y = all_objs[obj_img]['bottom_y'] + 0.0 + empty_height / 2
 
-        # left_x = all_objs[filename]['left_x']
-        # right_x = all_objs[filename]['right_x']
-        # top_y = all_objs[filename]['top_y']
-        # bottom_y = all_objs[filename]['bottom_y']
         img2 = img.crop((left_x, top_y, right_x, bottom_y))
-        img2.save('/home/fehty/PycharmProjects/SpriteLauncher/Images/' + filename + ".png")
+        path_to_save = dir_to_save + obj + '/'
+        Path(path_to_save).mkdir(parents=True, exist_ok=True)
+        img2.save(path_to_save + obj_img)
