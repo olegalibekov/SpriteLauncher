@@ -1,4 +1,3 @@
-from cropping import save_cropped_objs
 from sprite_creating import create_sprites
 
 init_objs = '/home/fehty/BlenderCompilation/BlenderRes/EachFrameRender/'
