@@ -4,14 +4,12 @@ from PIL import Image
 import numpy as np
 import os
 
-objs_dir = '/home/fehty/BlenderCompilation/BlenderRes/EachFrameRender/'
-dir_to_save = '/home/fehty/PycharmProjects/SpriteLauncher/Images/'
 
-
-def through_dir():
-    for obj in os.listdir(objs_dir):
+def save_cropped_objs():
+    from main import init_objs
+    for obj in os.listdir(init_objs):
         all_objs = dict()
-        obj_path = objs_dir + obj
+        obj_path = init_objs + obj
         for obj_img in os.listdir(obj_path):
             all_objs[obj_img] = get_pos_to_crop(obj_path + '/' + obj_img)
         l_dim = get_largest_dimension(all_objs)
@@ -47,7 +45,7 @@ def get_pos_to_crop(im_path):
     indices = np.dstack(np.indices(im.shape[:2]))
     data = np.concatenate((im, indices), axis=-1)
 
-    # [r g b a y x]
+    # [r g b o y x]
     for element in data:
         for elementItem in element:
             statement = left_x is not None and elementItem[3] != 0
@@ -76,7 +74,8 @@ def get_pos_to_crop(im_path):
 
 
 def get_cropped_imgs(obj, all_objs, l_dim):
-    obj_path = objs_dir + obj
+    from main import init_objs
+    obj_path = init_objs + obj
     for obj_img in os.listdir(obj_path):
         img = Image.open(obj_path + '/' + obj_img)
         length = abs(all_objs[obj_img]['left_x'] - all_objs[obj_img]['right_x'])
@@ -89,6 +88,8 @@ def get_cropped_imgs(obj, all_objs, l_dim):
         bottom_y = all_objs[obj_img]['bottom_y'] + 0.0 + empty_height / 2
 
         img2 = img.crop((left_x, top_y, right_x, bottom_y))
-        path_to_save = dir_to_save + obj + '/'
+
+        from main import cropped_objs
+        path_to_save = cropped_objs + obj + '/'
         Path(path_to_save).mkdir(parents=True, exist_ok=True)
         img2.save(path_to_save + obj_img)
