@@ -1,17 +1,17 @@
 from pathlib import Path
 from PIL import Image, ImageOps
-
+import json
 import os
 
 resolutions = {
-    'highResolution': 1,
+    'highResolution': 1.0,
     'mediumResolution': 0.7,
     'lowResolution': 0.4
 }
 
 
 def create_sprites_and_json():
-    json_data = {'spriteObjs': {}}
+    sprite_json = {'spriteObjs': {}}
     from main import cropped_objs
     for obj in os.listdir(cropped_objs):
         obj_path = cropped_objs + obj + '/'
@@ -28,10 +28,15 @@ def create_sprites_and_json():
         sprite_data = launch_sprite(frames)
         save_dif_res(obj, sprite_data)
 
-        from sprite_json import modify_json
+        from sprite_json import get_json_obj
         tile_s = {'width': frames[0].size[0], 'height': frames[0].size[1]}
-        json_data = modify_json(json_data, obj, tile_s, len(frames), resolutions)
-    print(json_data)
+        # print(get_json_obj(obj, tile_s, len(frames), resolutions))
+        sprite_json['spriteObjs'].update(get_json_obj(obj, tile_s, len(frames), resolutions))
+    # sprite_json = dict(sorted(sprite_json['spriteObjs'].items()))
+    # sprite_json = {k: sprite_json[k] for k in sorted(sprite_json)}
+    with open('result.json', 'w') as fp:
+        json.dump(sprite_json, fp, indent=4)
+    # print(sprite_json)
 
 
 def launch_sprite(frames):
