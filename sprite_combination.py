@@ -3,8 +3,10 @@ from PIL import Image, ImageOps
 
 import os
 
+image_resolutions = ["HIGH", "MEDIUM", "LOW"]
 
-def create_sprites():
+
+def create_sprites_and_json():
     from main import cropped_objs
     for obj in os.listdir(cropped_objs):
         obj_path = cropped_objs + obj + '/'
@@ -20,6 +22,9 @@ def create_sprites():
 
         sprite_data = launch_sprite(frames)
         save_dif_res(obj, sprite_data)
+        from sprite_json import create_json
+
+        # create_json(obj, {'tile_width': frames[0].size[0], 'tile_height': frames[0].size[1]}, len(frames), 'HIGH')
 
 
 def launch_sprite(frames):
@@ -53,7 +58,7 @@ def launch_sprite(frames):
 def save_dif_res(obj, orig_sprite_data):
     from main import saved_sprites
     Path(saved_sprites).mkdir(parents=True, exist_ok=True)
-    image_resolutions = ["HIGH", "MEDIUM", "LOW"]
+
     coef_med_res = 0.7
     coef_low_res = 0.4
 
@@ -72,7 +77,7 @@ def save_dif_res(obj, orig_sprite_data):
             right = int(spr_l_w)
             box = (0, 0, right, bottom)
             future_sprite.paste(spr_l, box)
-        if image_resolution == 'MEDIUM':
+        elif image_resolution == 'MEDIUM':
             top = spr_l_h
             bottom = top + int(spr_l_h * coef_med_res)
             right = int(spr_l_w * coef_med_res)
@@ -80,7 +85,7 @@ def save_dif_res(obj, orig_sprite_data):
             ratio = (int(spr_l_w * coef_med_res), int(spr_l_h * coef_med_res))
             resized_img = ImageOps.fit(spr_l, ratio)
             future_sprite.paste(resized_img, box)
-        if image_resolution == 'LOW':
+        elif image_resolution == 'LOW':
             top = int(spr_l_h + spr_l_h * coef_med_res)
             bottom = top + int(spr_l_h * coef_low_res)
             right = int(spr_l_w * coef_low_res)
