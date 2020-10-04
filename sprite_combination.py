@@ -3,10 +3,15 @@ from PIL import Image, ImageOps
 
 import os
 
-image_resolutions = ["HIGH", "MEDIUM", "LOW"]
+resolutions = {
+    'highResolution': 1,
+    'mediumResolution': 0.7,
+    'lowResolution': 0.4
+}
 
 
 def create_sprites_and_json():
+    json_data = {'spriteObjs': {}}
     from main import cropped_objs
     for obj in os.listdir(cropped_objs):
         obj_path = cropped_objs + obj + '/'
@@ -18,13 +23,15 @@ def create_sprites_and_json():
                 with Image.open(obj_path + obj_frame) as im:
                     frames.append(im.getdata())
             except:
-                print(obj + '/' + obj_frame + " is not a valid image")
+                print(obj + '/' + obj_frame + ' is not a valid image')
 
         sprite_data = launch_sprite(frames)
         save_dif_res(obj, sprite_data)
-        from sprite_json import create_json
 
-        # create_json(obj, {'tile_width': frames[0].size[0], 'tile_height': frames[0].size[1]}, len(frames), 'HIGH')
+        from sprite_json import modify_json
+        tile_s = {'width': frames[0].size[0], 'height': frames[0].size[1]}
+        json_data = modify_json(json_data, obj, tile_s, len(frames), resolutions)
+    print(json_data)
 
 
 def launch_sprite(frames):
@@ -34,7 +41,7 @@ def launch_sprite(frames):
     sprite_line_w = tile_width * len(frames)
     sprite_line_h = tile_height
 
-    sprite_line = Image.new("RGBA", (int(sprite_line_w), int(sprite_line_h)))
+    sprite_line = Image.new('RGBA', (int(sprite_line_w), int(sprite_line_h)))
 
     for current_frame in frames:
         top = 0
@@ -59,25 +66,25 @@ def save_dif_res(obj, orig_sprite_data):
     from main import saved_sprites
     Path(saved_sprites).mkdir(parents=True, exist_ok=True)
 
-    coef_med_res = 0.7
-    coef_low_res = 0.4
-
     spr_l = orig_sprite_data['sprite_line']
     spr_l_w = orig_sprite_data['sprite_line_w']
     spr_l_h = orig_sprite_data['sprite_line_h']
 
+    coef_med_res = resolutions['mediumResolution']
+    coef_low_res = resolutions['lowResolution']
+
     f_spr_w = int(spr_l_w)
     f_spr_h = int(spr_l_h + spr_l_h * coef_med_res + spr_l_h * coef_low_res)
 
-    future_sprite = Image.new("RGBA", (f_spr_w, f_spr_h))
+    future_sprite = Image.new('RGBA', (f_spr_w, f_spr_h))
 
-    for image_resolution in image_resolutions:
-        if image_resolution == 'HIGH':
+    for image_resolution in resolutions:
+        if image_resolution == 'highResolution':
             bottom = int(spr_l_h)
             right = int(spr_l_w)
             box = (0, 0, right, bottom)
             future_sprite.paste(spr_l, box)
-        elif image_resolution == 'MEDIUM':
+        elif image_resolution == 'mediumResolution':
             top = spr_l_h
             bottom = top + int(spr_l_h * coef_med_res)
             right = int(spr_l_w * coef_med_res)
@@ -85,7 +92,7 @@ def save_dif_res(obj, orig_sprite_data):
             ratio = (int(spr_l_w * coef_med_res), int(spr_l_h * coef_med_res))
             resized_img = ImageOps.fit(spr_l, ratio)
             future_sprite.paste(resized_img, box)
-        elif image_resolution == 'LOW':
+        elif image_resolution == 'lowResolution':
             top = int(spr_l_h + spr_l_h * coef_med_res)
             bottom = top + int(spr_l_h * coef_low_res)
             right = int(spr_l_w * coef_low_res)
