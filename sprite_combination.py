@@ -34,7 +34,7 @@ def create_sprites_and_json():
         sprite_objs.update(obj)
     sorted_objs = {k: sprite_objs[k] for k in sorted(sprite_objs)}
     frames_data = {'spriteObjs': sorted_objs}
-    with open('result.json', 'w') as fp:
+    with open('spritesData.json', 'w') as fp:
         json.dump(frames_data, fp, indent=4)
 
 

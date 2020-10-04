@@ -1,7 +1,6 @@
 def get_json_obj(obj_name, orig_tile_size, row_el_number, resolutions):
     json_data = {obj_name: {'highResolution': {}, 'mediumResolution': {},
-                                          'lowResolution': {}}}
-    # json_data = json.dumps(json_data)
+                            'lowResolution': {}}}
     for resolution in resolutions:
         tile_size = orig_tile_size
         if resolution == 'mediumResolution':
@@ -24,9 +23,5 @@ def get_json_obj(obj_name, orig_tile_size, row_el_number, resolutions):
                                               resolutions['mediumResolution']})
 
         data = {'tileSize': tile_size, 'tilesPosition': tiles_position}
-
         json_data[obj_name][resolution].update(data)
-
-        # json_data['spriteObjs'].update(data)
-    # print(data)
     return json_data
