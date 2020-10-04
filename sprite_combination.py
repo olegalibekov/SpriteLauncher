@@ -11,7 +11,7 @@ resolutions = {
 
 
 def create_sprites_and_json():
-    sprite_json = {'spriteObjs': {}}
+    sprite_objs = {}
     from main import cropped_objs
     for obj in os.listdir(cropped_objs):
         obj_path = cropped_objs + obj + '/'
@@ -30,13 +30,12 @@ def create_sprites_and_json():
 
         from sprite_json import get_json_obj
         tile_s = {'width': frames[0].size[0], 'height': frames[0].size[1]}
-        # print(get_json_obj(obj, tile_s, len(frames), resolutions))
-        sprite_json['spriteObjs'].update(get_json_obj(obj, tile_s, len(frames), resolutions))
-    # sprite_json = dict(sorted(sprite_json['spriteObjs'].items()))
-    # sprite_json = {k: sprite_json[k] for k in sorted(sprite_json)}
+        obj = get_json_obj(obj, tile_s, len(frames), resolutions)
+        sprite_objs.update(obj)
+    sorted_objs = {k: sprite_objs[k] for k in sorted(sprite_objs)}
+    frames_data = {'spriteObjs': sorted_objs}
     with open('result.json', 'w') as fp:
-        json.dump(sprite_json, fp, indent=4)
-    # print(sprite_json)
+        json.dump(frames_data, fp, indent=4)
 
 
 def launch_sprite(frames):
