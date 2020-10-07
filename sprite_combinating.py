@@ -12,9 +12,9 @@ resolutions = {
 
 def create_sprites_and_json():
     sprite_objs = {}
-    from main import cropped_objs
-    for obj in os.listdir(cropped_objs):
-        obj_path = cropped_objs + obj + '/'
+    from main import stylized_cropped_objs
+    for obj in os.listdir(stylized_cropped_objs):
+        obj_path = stylized_cropped_objs + obj + '/'
         frames = []
         obj_frames = os.listdir(obj_path)
         obj_frames.sort()

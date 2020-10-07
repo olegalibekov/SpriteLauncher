@@ -10,22 +10,22 @@ temp_img_path = '/home/fehty/PycharmProjects/SpriteLauncher/temp.png'
 
 
 def create_stylized_imgs():
-    script_descriptor = open("paint_style.py")
-    a_script = script_descriptor.read()
-    sys.argv = ["paint_style.py", "argName"]
-    exec(a_script)
-    script_descriptor.close()
+    # script_descriptor = open("paint_style.py")
+    # a_script = script_descriptor.read()
+    # sys.argv = ["paint_style.py", "argName"]
+    # exec(a_script)
+    # script_descriptor.close()
 
-    # from main import cropped_objs
-    # Path(cropped_objs).mkdir(parents=True, exist_ok=True)
-    # for obj in os.listdir(cropped_objs):
-    #     obj_path = cropped_objs + obj
-    #     for obj_img in os.listdir(obj_path):
-    #         get_img_mask(obj_path + '/' + obj_img)
-    #         smooth_img()
-    #         mask_and_img(obj_path + '/' + obj_img)
-    #         make_b_back_transparent(obj, obj_img)
-    # Path(temp_img_path).unlink()
+    from main import cropped_objs
+    Path(cropped_objs).mkdir(parents=True, exist_ok=True)
+    for obj in os.listdir(cropped_objs):
+        obj_path = cropped_objs + obj
+        for obj_img in os.listdir(obj_path):
+            get_img_mask(obj_path + '/' + obj_img)
+            smooth_img()
+            mask_and_img(obj_path + '/' + obj_img)
+            make_b_back_transparent(obj, obj_img)
+    Path(temp_img_path).unlink()
 
 
 def get_img_mask(obj_path):
@@ -38,7 +38,7 @@ def get_img_mask(obj_path):
 
 def smooth_img():
     img_for_smoothing = cv2.imread(temp_img_path)
-    blur = cv2.blur(img_for_smoothing, (1, 1))
+    blur = cv2.blur(img_for_smoothing, (1,1))
     plt.imsave(temp_img_path, blur)
 
 
