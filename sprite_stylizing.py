@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from pathlib import Path
 
 temp_img_path = '/home/fehty/PycharmProjects/SpriteLauncher/temp.png'
+temp_stylized_img_path = '/home/fehty/PycharmProjects/SpriteLauncher/temp_stylized_img.png'
 
 current_img_path = None
 
@@ -21,8 +22,8 @@ def create_stylized_imgs():
             execfile("paint_style.py")
             get_img_mask(img_path)
             smooth_img()
-            mask_and_img(img_path)
-            make_b_back_transparent(obj, obj_img)
+            mask_and_img(temp_stylized_img_path)
+            transparent_and_save(obj, obj_img)
     Path(temp_img_path).unlink()
 
 
@@ -62,7 +63,7 @@ def mask_and_img(img_path):
     cv2.imwrite(temp_img_path, dst)
 
 
-def make_b_back_transparent(obj_name, obj_img):
+def transparent_and_save(obj_name, obj_img):
     img = Image.open(temp_img_path)
     img = img.convert("RGBA")
     data = img.getdata()

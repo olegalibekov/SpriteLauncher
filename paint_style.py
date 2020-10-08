@@ -20,7 +20,7 @@ parser.add_argument('--img', default=current_img_path, type=str, help='test imag
 # parser.add_argument('--img', default='/home/fehty/PycharmProjects/SpriteLauncher/StylizedObjects/Obj0/Fr126Rot359.png', type=str, help='test image')
 # parser.add_argument('--img', default='/home/fehty/Downloads/1.jpg', type=str, help='test image')
 parser.add_argument('--imgid', default=0, type=int, help='set begin number for generated image')
-parser.add_argument('--divide', default=1, type=int, help='divide the target image to get better resolution')
+parser.add_argument('--divide', default=4, type=int, help='divide the target image to get better resolution')
 args = parser.parse_args()
 
 canvas_cnt = args.divide * args.divide
@@ -108,7 +108,7 @@ def save_img_old(res, imgid, divide=False):
         output = output[0]
     output = (output * 255).astype('uint8')
     output = cv2.resize(output, origin_shape)
-    cv2.imwrite(temp_img_path, output)
+    cv2.imwrite(temp_stylized_img_path, output)
     # cv2.imwrite('output/generated' + str(imgid) + '.png', output)
 
 
