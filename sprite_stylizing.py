@@ -1,31 +1,41 @@
 import cv2
 import os
-import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 from pathlib import Path
-import sys
 
 temp_img_path = '/home/fehty/PycharmProjects/SpriteLauncher/temp.png'
 
+current_img_path = None
+
 
 def create_stylized_imgs():
-    # script_descriptor = open("paint_style.py")
-    # a_script = script_descriptor.read()
-    # sys.argv = ["paint_style.py", "argName"]
-    # exec(a_script)
-    # script_descriptor.close()
-
     from main import cropped_objs
     Path(cropped_objs).mkdir(parents=True, exist_ok=True)
     for obj in os.listdir(cropped_objs):
         obj_path = cropped_objs + obj
         for obj_img in os.listdir(obj_path):
-            get_img_mask(obj_path + '/' + obj_img)
+            img_path = obj_path + '/' + obj_img
+            listOfGlobals = globals()
+            listOfGlobals['current_img_path'] = img_path
+            execfile("paint_style.py")
+            get_img_mask(img_path)
             smooth_img()
-            mask_and_img(obj_path + '/' + obj_img)
+            mask_and_img(img_path)
             make_b_back_transparent(obj, obj_img)
     Path(temp_img_path).unlink()
+
+
+def execfile(filepath, globals=None, locals=None):
+    if globals is None:
+        globals = {}
+    globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+        "img": "/home/fehty/PycharmProjects/SpriteLauncher/StylizedObjects/Obj0/Fr126Rot359.png"
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, 'exec'), globals, locals)
 
 
 def get_img_mask(obj_path):
@@ -38,7 +48,7 @@ def get_img_mask(obj_path):
 
 def smooth_img():
     img_for_smoothing = cv2.imread(temp_img_path)
-    blur = cv2.blur(img_for_smoothing, (1,1))
+    blur = cv2.blur(img_for_smoothing, (1, 1))
     plt.imsave(temp_img_path, blur)
 
 

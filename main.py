@@ -9,8 +9,8 @@ stylized_cropped_objs = '/home/fehty/PycharmProjects/SpriteLauncher/StylizedObje
 saved_sprites = '/home/fehty/PycharmProjects/SpriteLauncher/Sprites/'
 
 if __name__ == '__main__':
-    save_cropped_objs()
+    # save_cropped_objs()
     create_stylized_imgs()
-    create_sprites_and_json()
+    # create_sprites_and_json()
 
 # can be optimized without saving intermediate images for creating a sprite

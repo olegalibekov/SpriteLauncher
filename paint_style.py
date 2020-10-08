@@ -4,6 +4,8 @@ import argparse
 from DRL.actor import *
 from Renderer.stroke_gen import *
 from Renderer.model import *
+from sprite_stylizing import *
+import sprite_stylizing
 
 torch.cuda.empty_cache()
 
@@ -12,12 +14,10 @@ width = 128
 
 parser = argparse.ArgumentParser(description='Learning to Paint')
 parser.add_argument('--max_step', default=40, type=int, help='max length for episode')
-# parser.add_argument('--actor', default='./model/Paint-run1/actor.pkl', type=str, help='Actor model')
-# parser.add_argument('--renderer', default='./renderer.pkl', type=str, help='renderer model')
-# parser.add_argument('--img', default='image/test.png', type=str, help='test image')
 parser.add_argument('--actor', default='/home/fehty/LearningToPaint/actor.pkl', type=str, help='Actor model')
 parser.add_argument('--renderer', default='/home/fehty/LearningToPaint/renderer.pkl', type=str, help='renderer model')
-parser.add_argument('--img', default='/home/fehty/PycharmProjects/SpriteLauncher/CroppedObjects/Obj8/Frame014.png', type=str, help='test image')
+parser.add_argument('--img', default=current_img_path, type=str, help='test image')
+# parser.add_argument('--img', default='/home/fehty/PycharmProjects/SpriteLauncher/StylizedObjects/Obj0/Fr126Rot359.png', type=str, help='test image')
 # parser.add_argument('--img', default='/home/fehty/Downloads/1.jpg', type=str, help='test image')
 parser.add_argument('--imgid', default=0, type=int, help='set begin number for generated image')
 parser.add_argument('--divide', default=1, type=int, help='divide the target image to get better resolution')
@@ -39,7 +39,7 @@ Decoder = FCN()
 Decoder.load_state_dict(torch.load(args.renderer))
 
 
-def decode(x, canvas, decode = False):  # b * (10 + 3)
+def decode(x, canvas, decode=False):  # b * (10 + 3)
     global final_canvas
     x = x.view(-1, 10 + 3)
     stroke = 1 - Decoder(x[:, :10])
@@ -55,7 +55,7 @@ def decode(x, canvas, decode = False):  # b * (10 + 3)
         final_canvas = final_canvas * (1 - stroke[:, i]) + color_stroke[:, i]
         res.append(canvas)
         canvas_array.append(torch.zeros([1, 3, width, width]).to(device) * (1 - stroke[:, i]) + color_stroke[:, i])
-        save_img(canvas_array[-1], len(canvas_array), decode)
+        # save_img(canvas_array[-1], len(canvas_array), decode)
     return canvas, res
 
 
@@ -108,7 +108,9 @@ def save_img_old(res, imgid, divide=False):
         output = output[0]
     output = (output * 255).astype('uint8')
     output = cv2.resize(output, origin_shape)
-    cv2.imwrite('output/generated' + str(imgid) + '.png', output)
+    cv2.imwrite(temp_img_path, output)
+    # cv2.imwrite('output/generated' + str(imgid) + '.png', output)
+
 
 def save_img(res, imgid, divide=False):
     output = res.detach().cpu().numpy()  # d * d, 3, width, width
@@ -192,5 +194,3 @@ with torch.no_grad():
             #     save_img_old(canvas, 202, True)
     save_img_old(canvas, 202, True)
     # save_img(final_canvas, 201, True)
-
-
