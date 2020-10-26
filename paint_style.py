@@ -13,14 +13,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 width = 128
 
 parser = argparse.ArgumentParser(description='Learning to Paint')
-parser.add_argument('--max_step', default=40, type=int, help='max length for episode')
+parser.add_argument('--max_step', default=10, type=int, help='max length for episode')
 parser.add_argument('--actor', default='/home/fehty/LearningToPaint/actor.pkl', type=str, help='Actor model')
 parser.add_argument('--renderer', default='/home/fehty/LearningToPaint/renderer.pkl', type=str, help='renderer model')
 parser.add_argument('--img', default=current_img_path, type=str, help='test image')
 # parser.add_argument('--img', default='/home/fehty/PycharmProjects/SpriteLauncher/StylizedObjects/Obj0/Fr126Rot359.png', type=str, help='test image')
 # parser.add_argument('--img', default='/home/fehty/Downloads/1.jpg', type=str, help='test image')
 parser.add_argument('--imgid', default=0, type=int, help='set begin number for generated image')
-parser.add_argument('--divide', default=4, type=int, help='divide the target image to get better resolution')
+parser.add_argument('--divide', default=2, type=int, help='divide the target image to get better resolution')
 args = parser.parse_args()
 
 canvas_cnt = args.divide * args.divide

@@ -2,6 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageOps
 import json
 import os
+import math
 
 resolutions = {
     'highResolution': 1.0,
@@ -77,6 +78,8 @@ def save_dif_res(obj, orig_sprite_data):
     coef_med_res = resolutions['mediumResolution']
     coef_low_res = resolutions['lowResolution']
 
+
+
     f_spr_w = int(spr_l_w)
     f_spr_h = int(spr_l_h + spr_l_h * coef_med_res + spr_l_h * coef_low_res)
 
@@ -84,25 +87,26 @@ def save_dif_res(obj, orig_sprite_data):
 
     for image_resolution in resolutions:
         if image_resolution == 'highResolution':
-            bottom = int(spr_l_h)
-            right = int(spr_l_w)
+            bottom = math.ceil(spr_l_h)
+            right = math.ceil(spr_l_w)
             box = (0, 0, right, bottom)
             future_sprite.paste(spr_l, box)
         elif image_resolution == 'mediumResolution':
             top = spr_l_h
-            bottom = top + int(spr_l_h * coef_med_res)
-            right = int(spr_l_w * coef_med_res)
+            bottom = top + math.ceil(spr_l_h * coef_med_res)
+            right = math.ceil(spr_l_w * coef_med_res)
             box = (0, top, right, bottom)
-            ratio = (int(spr_l_w * coef_med_res), int(spr_l_h * coef_med_res))
+            ratio = (math.ceil(spr_l_w * coef_med_res), math.ceil(spr_l_h * coef_med_res))
             resized_img = ImageOps.fit(spr_l, ratio)
             future_sprite.paste(resized_img, box)
         elif image_resolution == 'lowResolution':
-            top = int(spr_l_h + spr_l_h * coef_med_res)
-            bottom = top + int(spr_l_h * coef_low_res)
-            right = int(spr_l_w * coef_low_res)
+            top = math.ceil(spr_l_h + spr_l_h * coef_med_res)
+            bottom = top + math.ceil(spr_l_h * coef_low_res)
+            right = math.ceil(spr_l_w * coef_low_res)
             box = (0, top, right, bottom)
-            ratio = (int(spr_l_w * coef_low_res), int(spr_l_h * coef_low_res))
+            # ratio = (int(spr_l_w * coef_low_res), int(spr_l_h * coef_low_res))
+            ratio = (math.ceil(spr_l_w * coef_low_res), math.ceil(spr_l_h * coef_low_res))
             resized_img = ImageOps.fit(spr_l, ratio)
             future_sprite.paste(resized_img, box)
 
-    future_sprite.save(saved_sprites + 'Sprite' + obj + '.png', 'PNG')
+    future_sprite.save(saved_sprites + obj + '.png', 'PNG')

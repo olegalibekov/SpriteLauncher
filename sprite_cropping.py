@@ -45,7 +45,7 @@ def get_pos_to_crop(im_path):
     indices = np.dstack(np.indices(im.shape[:2]))
     data = np.concatenate((im, indices), axis=-1)
 
-    # [r g b o y x]
+    # [r g b a y x]
     for element in data:
         for elementItem in element:
             statement = left_x is not None and elementItem[3] != 0
