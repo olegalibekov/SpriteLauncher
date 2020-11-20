@@ -10,7 +10,6 @@ resolutions = {
     'lowResolution': 0.4
 }
 
-
 def create_sprites_and_json():
     sprite_objs = {}
     from main import stylized_cropped_objs
@@ -77,8 +76,6 @@ def save_dif_res(obj, orig_sprite_data):
 
     coef_med_res = resolutions['mediumResolution']
     coef_low_res = resolutions['lowResolution']
-
-
 
     f_spr_w = int(spr_l_w)
     f_spr_h = int(spr_l_h + spr_l_h * coef_med_res + spr_l_h * coef_low_res)
