@@ -78,7 +78,8 @@ def save_dif_res(obj, orig_sprite_data):
     coef_low_res = resolutions['lowResolution']
 
     f_spr_w = int(spr_l_w)
-    f_spr_h = int(spr_l_h + spr_l_h * coef_med_res + spr_l_h * coef_low_res)
+    # f_spr_h = int(spr_l_h + spr_l_h * coef_med_res + spr_l_h * coef_low_res)
+    f_spr_h = int(spr_l_h)
 
     future_sprite = Image.new('RGBA', (f_spr_w, f_spr_h))
 
@@ -88,22 +89,22 @@ def save_dif_res(obj, orig_sprite_data):
             right = math.ceil(spr_l_w)
             box = (0, 0, right, bottom)
             future_sprite.paste(spr_l, box)
-        elif image_resolution == 'mediumResolution':
-            top = spr_l_h
-            bottom = top + math.ceil(spr_l_h * coef_med_res)
-            right = math.ceil(spr_l_w * coef_med_res)
-            box = (0, top, right, bottom)
-            ratio = (math.ceil(spr_l_w * coef_med_res), math.ceil(spr_l_h * coef_med_res))
-            resized_img = ImageOps.fit(spr_l, ratio)
-            future_sprite.paste(resized_img, box)
-        elif image_resolution == 'lowResolution':
-            top = math.ceil(spr_l_h + spr_l_h * coef_med_res)
-            bottom = top + math.ceil(spr_l_h * coef_low_res)
-            right = math.ceil(spr_l_w * coef_low_res)
-            box = (0, top, right, bottom)
-            # ratio = (int(spr_l_w * coef_low_res), int(spr_l_h * coef_low_res))
-            ratio = (math.ceil(spr_l_w * coef_low_res), math.ceil(spr_l_h * coef_low_res))
-            resized_img = ImageOps.fit(spr_l, ratio)
-            future_sprite.paste(resized_img, box)
+        # elif image_resolution == 'mediumResolution':
+        #     top = spr_l_h
+        #     bottom = top + math.ceil(spr_l_h * coef_med_res)
+        #     right = math.ceil(spr_l_w * coef_med_res)
+        #     box = (0, top, right, bottom)
+        #     ratio = (math.ceil(spr_l_w * coef_med_res), math.ceil(spr_l_h * coef_med_res))
+        #     resized_img = ImageOps.fit(spr_l, ratio)
+        #     future_sprite.paste(resized_img, box)
+        # elif image_resolution == 'lowResolution':
+        #     top = math.ceil(spr_l_h + spr_l_h * coef_med_res)
+        #     bottom = top + math.ceil(spr_l_h * coef_low_res)
+        #     right = math.ceil(spr_l_w * coef_low_res)
+        #     box = (0, top, right, bottom)
+        #     # ratio = (int(spr_l_w * coef_low_res), int(spr_l_h * coef_low_res))
+        #     ratio = (math.ceil(spr_l_w * coef_low_res), math.ceil(spr_l_h * coef_low_res))
+        #     resized_img = ImageOps.fit(spr_l, ratio)
+        #     future_sprite.paste(resized_img, box)
 
     future_sprite.save(saved_sprites + obj + '.png', 'PNG')
