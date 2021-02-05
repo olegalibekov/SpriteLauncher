@@ -4,10 +4,12 @@ from sprite_combinating import create_sprites_and_json
 from sprite_cropping import save_cropped_objs
 from sprite_stylizing import create_stylized_imgs
 from resolution_division import division_launcher
-
+from webp_creation import webp_creation
 # Objects
 # init_objs = '/home/fehty/BlenderCompilation/BlenderRes/EachFrameRender/'
 # init_objs = '/home/fehty/BlenderCompilation/BlenderRes/ClosestRotateRender/'
+
+
 init_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/objectBody001/test_final/'
 cropped_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/objectBody001/test_final/cropped/'
 # cropped_objs = '/home/fehty/PycharmProjects/SpriteLauncher/CroppedObjects/'
@@ -24,9 +26,9 @@ saved_sprites = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/o
 
 if __name__ == '__main__':
     # Objects
-    save_cropped_objs()
+    # save_cropped_objs()
     # create_stylized_imgs()
     # division_launcher()
     # create_sprites_and_json()
-
+    webp_creation()
     # common_foldering("/home/fehty/PycharmProjects/SpriteLauncher/CroppedObjects3/", '/home/fehty/PycharmProjects/SpriteLauncher/CommonObjects/')
