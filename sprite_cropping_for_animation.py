@@ -16,8 +16,9 @@ def crop_recursively():
         if os.path.isdir(current_folder_object):
             global max_edge_coordinates
             max_edge_coordinates = None
+            print('findMax')
             find_max_coord_recursively(current_folder_object)
-            print(max_edge_coordinates)
+            print('Crop')
             crop_images_recursively(current_folder_object)
 
 
@@ -56,8 +57,11 @@ def find_max_coord_among_images(subdirectory_path, images_name):
                     parallel_functions.append([get_pos_to_crop, (subdirectory_path + '/' + images_name[img_index], L,)])
 
             combineParallel([*parallel_functions])
+
             for l_item in L:
                 check_max_edge_coordinates(l_item)
+
+            print(iteration)
 
 
 def check_max_edge_coordinates(obj_edge_coordinates):
@@ -142,7 +146,6 @@ def crop_image(image_path_to_open, image_path_to_save):
     image_name = splitted_image_path[1]
 
     img = Image.open(image_path_to_open)
-    print(max_edge_coordinates)
     img2 = img.crop((max_edge_coordinates['left_x'], max_edge_coordinates['top_y'],
                      max_edge_coordinates['right_x'], max_edge_coordinates['bottom_y']))
     from main import cropped_objs
