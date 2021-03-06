@@ -4,22 +4,20 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from imageio import imread
-from multiprocessing import Process, Manager, Array
+from multiprocessing import Process, Manager
 
 max_edge_coordinates = None
-temp_edge_coordinates = []
 
 
 def crop_recursively():
-    # === TODO Don't set dim = dict()... set dim = {...}
-
     from main import init_objs
     for init_folder_object in os.listdir(init_objs):
-        max_edge_coordinates = None
-        temp_edge_coordinates = []
         current_folder_object = init_objs + init_folder_object + '/'
         if os.path.isdir(current_folder_object):
+            global max_edge_coordinates
+            max_edge_coordinates = None
             find_max_coord_recursively(current_folder_object)
+            print(max_edge_coordinates)
             crop_images_recursively(current_folder_object)
 
 
@@ -65,32 +63,13 @@ def find_max_coord_among_images(subdirectory_path, images_name):
 def check_max_edge_coordinates(obj_edge_coordinates):
     global max_edge_coordinates
     if max_edge_coordinates is None:
-        max_edge_coordinates = dict()
-        max_edge_coordinates['left_x'] = obj_edge_coordinates['left_x']
-        max_edge_coordinates['right_x'] = obj_edge_coordinates['right_x']
-        max_edge_coordinates['top_y'] = obj_edge_coordinates['top_y']
-        max_edge_coordinates['bottom_y'] = obj_edge_coordinates['bottom_y']
+        max_edge_coordinates = {
+            'left_x': obj_edge_coordinates['left_x'],
+            'right_x': obj_edge_coordinates['right_x'],
+            'top_y': obj_edge_coordinates['top_y'],
+            'bottom_y': obj_edge_coordinates['bottom_y']
+        }
 
-    if obj_edge_coordinates['left_x'] < max_edge_coordinates['left_x']:
-        max_edge_coordinates['left_x'] = obj_edge_coordinates['left_x']
-    if obj_edge_coordinates['right_x'] > max_edge_coordinates['right_x']:
-        max_edge_coordinates['right_x'] = obj_edge_coordinates['right_x']
-    if obj_edge_coordinates['top_y'] < max_edge_coordinates['top_y']:
-        max_edge_coordinates['top_y'] = obj_edge_coordinates['top_y']
-    if obj_edge_coordinates['bottom_y'] > max_edge_coordinates['bottom_y']:
-        max_edge_coordinates['bottom_y'] = obj_edge_coordinates['bottom_y']
-
-    if max_edge_coordinates['left_x'] % 2 != 0:
-        max_edge_coordinates['left_x'] += 1
-    if max_edge_coordinates['right_x'] % 2 != 0:
-        max_edge_coordinates['right_x'] += 1
-    if max_edge_coordinates['top_y'] % 2 != 0:
-        max_edge_coordinates['top_y'] += 1
-    if max_edge_coordinates['bottom_y'] % 2 != 0:
-        max_edge_coordinates['bottom_y'] += 1
-
-
-def compare_max_edge_coordinates(max_edge_coordinates, obj_edge_coordinates):
     if obj_edge_coordinates['left_x'] < max_edge_coordinates['left_x']:
         max_edge_coordinates['left_x'] = obj_edge_coordinates['left_x']
     if obj_edge_coordinates['right_x'] > max_edge_coordinates['right_x']:
@@ -163,6 +142,7 @@ def crop_image(image_path_to_open, image_path_to_save):
     image_name = splitted_image_path[1]
 
     img = Image.open(image_path_to_open)
+    print(max_edge_coordinates)
     img2 = img.crop((max_edge_coordinates['left_x'], max_edge_coordinates['top_y'],
                      max_edge_coordinates['right_x'], max_edge_coordinates['bottom_y']))
     from main import cropped_objs
