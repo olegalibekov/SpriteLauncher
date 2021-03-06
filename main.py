@@ -2,7 +2,7 @@ from bmp_converter import convert_to_bmp
 from common_foldering import common_foldering
 from sprite_combinating import create_sprites_and_json
 # from sprite_cropping import save_cropped_objs
-from sprite_cropping_for_animation import save_cropped_objs
+from sprite_cropping_for_animation import crop_recursively
 from sprite_stylizing import create_stylized_imgs
 from resolution_division import division_launcher
 import asyncio
@@ -14,7 +14,7 @@ import sys
 from webp_creation import webp_creation
 
 init_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/object24_bod_1_0_0_001_copy_async/'
-cropped_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/object24_bod_1_0_0_001_copy_async/cropped/'
+cropped_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/object24_bod_1_0_0_001_copy_async_cropped/'
 # cropped_objs = '/home/fehty/PycharmProjects/SpriteLauncher/CroppedObjects/'
 # stylized_cropped_objs = '/home/fehty/PycharmProjects/SpriteLauncher/StylizedCroppedObjects/'
 # stylized_cropped_objs = '/home/fehty/BlenderCompilation/BlenderRes/RendersRotateAround/objectBody001/test_final/cropped/'
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # asyncio.run(save_cropped_objs())
     import time
     s = time.perf_counter()
-    save_cropped_objs()
+    crop_recursively()
     elapsed = time.perf_counter() - s
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
 
