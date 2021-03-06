@@ -16,9 +16,7 @@ def crop_recursively():
         if os.path.isdir(current_folder_object):
             global max_edge_coordinates
             max_edge_coordinates = None
-            print('findMax')
             find_max_coord_recursively(current_folder_object)
-            print('Crop')
             crop_images_recursively(current_folder_object)
 
 
@@ -38,7 +36,7 @@ def find_max_coord_recursively(subdirectory_path):
 def find_max_coord_among_images(subdirectory_path, images_name):
     global max_edge_coordinates
 
-    images_for_one_execution = 30
+    images_for_one_execution = 8
     with Manager() as manager:
         images_in_folder = len(images_name)
         from math import ceil, floor
@@ -60,8 +58,6 @@ def find_max_coord_among_images(subdirectory_path, images_name):
 
             for l_item in L:
                 check_max_edge_coordinates(l_item)
-
-            print(iteration)
 
 
 def check_max_edge_coordinates(obj_edge_coordinates):
